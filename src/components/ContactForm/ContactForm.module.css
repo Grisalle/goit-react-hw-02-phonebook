@@ -1,14 +1,21 @@
-.buttonContainer {
-    margin-top: 24px;
+.contactForm {
     display: flex;
-    justify-content: center;
+    flex-direction: column;
+    margin-top: 24px;
     gap: 16px;
 }
 
-.btn {
-    min-width: 120px;
-    height: 40px;
-    text-transform: capitalize;
+.inputName {
+    margin-top: 4px;
+}
+
+.inputNumber {
+    margin-top: 4px;
+}
+
+.addBtn {
+    width: 160px;
+    height: 32px;
     font-weight: 500;
     font-size: 16px;
     line-height: 1.5;
@@ -21,7 +28,7 @@
     border-radius: 4px;
 }
 
-.btn:hover,
-.btn:focus {
+.addBtn:hover,
+.addBtn:focus {
     background-color: brown;
 }

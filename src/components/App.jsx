@@ -1,60 +1,64 @@
 import { Component } from 'react';
-import { Statistics } from './Statistics/Statistics';
-import { FeedbackOptions } from './FeedbackOptions/FeedbackOptions';
-import { Section } from './Section/Section';
+import { nanoid } from 'nanoid';
+import { ContactForm } from './ContactForm/ContactForm';
+import { ContactList } from './ContactList/ContactList';
+import { Search } from './Search/Search';
+import css from './App.module.css';
 
 export class App extends Component {
   state = {
-    good: 0,
-    neutral: 0,
-    bad: 0,
+    contacts: [
+      { id: 'id-1', name: 'Rosie Simpson', number: '459-12-56' },
+      { id: 'id-2', name: 'Hermione Kline', number: '443-89-12' },
+      { id: 'id-3', name: 'Eden Clements', number: '645-17-79' },
+      { id: 'id-4', name: 'Annie Copeland', number: '227-91-26' },
+    ],
+
+    filter: '',
   };
 
-  addFeedback = option =>
-    this.setState(prevState => {
-      return {
-        [option]: prevState[option] + 1,
-      };
+  handleDeleteUser = id => {
+    if (window.confirm('Are you sure?')) {
+      this.setState({
+        contacts: [...this.state.contacts.filter(user => user.id !== id)],
+      });
+    }
+  };
+
+  createUser = data => {
+    this.setState({
+      contacts: [
+        ...this.state.contacts,
+        { name: data.name, id: nanoid(), number: data.number },
+      ],
     });
-
-  countTotalFeedback = () => {
-    const { good, neutral, bad } = this.state;
-    return good + neutral + bad;
   };
 
-  countPositiveFeedbackPercentage = () => {
-    const total = this.countTotalFeedback();
-    return Math.round((this.state.good * 100) / total);
+  handlerSearch = e => {
+    this.setState({ filter: e.currentTarget.value });
   };
 
   render() {
-    const { good, neutral, bad } = this.state;
-    const options = Object.keys(this.state);
-    const total = this.countTotalFeedback();
-    const positivePercentage = this.countPositiveFeedbackPercentage() || 0;
-
     return (
-      <div className="app">
-        <Section title="Please leave feedback">
-          <FeedbackOptions
-            options={options}
-            onLeaveFeedback={this.addFeedback}
+      <section className="section">
+        <div className="container">
+          <h1 className={css.title}>Phone book</h1>
+          <ContactForm
+            createUser={this.createUser}
+            userNumber={this.state.number}
+            userName={this.state.name}
+            contacts={this.state.contacts}
           />
-        </Section>
-        <Section title="Statistics">
-          {total > 0 ? (
-            <Statistics
-              good={good}
-              neutral={neutral}
-              bad={bad}
-              total={total}
-              positivePercentage={positivePercentage}
-            />
-          ) : (
-            <h3 className="noFeedback">There is no feedback</h3>
-          )}
-        </Section>
-      </div>
+          <h2 className={css.contactsTitle}>Contacts</h2>
+          <p className={css.search}>Find contacts by name</p>
+          <Search onChange={this.handlerSearch} value={this.state.filter} />
+          <ContactList
+            handleDeleteUser={this.handleDeleteUser}
+            contacts={this.state.contacts}
+            filter={this.state.filter}
+          />
+        </div>
+      </section>
     );
   }
 }
